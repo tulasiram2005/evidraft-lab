@@ -1,0 +1,34 @@
+{
+  "name": "evidraft-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "check": "tsc --noEmit",
+    "api": "node --import tsx apps/api/server.ts",
+    "verify": "node --import tsx packages/cli/verify.ts",
+    "push-run": "node --import tsx packages/cli/push.ts",
+    "test:domain": "node --import tsx --test tests/domain.test.ts"
+  },
+  "dependencies": {
+    "react": "https://registry.npmjs.org/react/-/react-19.2.7.tgz",
+    "react-dom": "https://registry.npmjs.org/react-dom/-/react-dom-19.2.7.tgz",
+    "lucide-react": "https://registry.npmjs.org/lucide-react/-/lucide-react-0.544.0.tgz",
+    "zod": "https://registry.npmjs.org/zod/-/zod-3.25.76.tgz"
+  },
+  "devDependencies": {
+    "typescript": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
+    "vite": "https://registry.npmjs.org/vite/-/vite-7.1.4.tgz",
+    "tsx": "https://registry.npmjs.org/tsx/-/tsx-4.21.0.tgz",
+    "@types/react": "https://registry.npmjs.org/@types/react/-/react-19.1.12.tgz",
+    "@types/react-dom": "https://registry.npmjs.org/@types/react-dom/-/react-dom-19.1.9.tgz",
+    "@types/node": "https://registry.npmjs.org/@types/node/-/node-22.20.0.tgz"
+  },
+  "overrides": {
+    "rollup": "4.62.2",
+    "esbuild": "0.25.9"
+  }
+}
