@@ -17,6 +17,7 @@ test('freeze blocks broken bindings',async()=>{await assert.rejects(()=>freeze({
 test('bundle verifier rejects missing run even with rehashed manifest',async()=>{const s=await seed();const b=await freeze(s.document,s.runs);b.runs=[];b.manifest.runHashes=[];b.hash=await hash(b.manifest);assert.equal((await verifyBundle(b)).valid,false);});
 test('CSV supports quoted commas and rejects formulas and missing numbers',()=>{assert.equal(parseCSV('experiment,label,seed,metric,value\nx,"label, quoted",42,f1,0.9')[0].label,'label, quoted');for(const row of ['x,=HYPERLINK(a),42,f1,0.9','x,a,,f1,.9','x,a,42,f1,','x,"unclosed,42,f1,.9'])assert.throws(()=>parseCSV('experiment,label,seed,metric,value\n'+row));});
 test('audit chain commits to its predecessor',async()=>{const a=await auditEvent('genesis','import','one');const b=await auditEvent(a.hash,'rebind','two');assert.equal(b.previous,a.hash);const {hash:digest,...payload}=b;assert.equal(await hash(payload),digest);});
+test('bindings cannot read inherited object properties',async()=>{const run=await createRun(input);const b=bindings('{{run:'+run.id+'.metrics.constructor | 3dp}}')[0];assert.equal(resolve(b,[run]).broken,true);});
 
 for(let i=0;i<40;i++)test(`golden arithmetic paragraph ${String(i+1).padStart(2,'0')}`,async()=>{
  const mode=i%4;const a=await createRun({...input,metrics:{f1:.5},seed:i});const b=await createRun({...input,metrics:{f1:.6},seed:i+100});const ref=(id:string)=>'{{run:'+id+'.metrics.f1 | 3dp}}';

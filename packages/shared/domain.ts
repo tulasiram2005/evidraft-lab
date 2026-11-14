@@ -25,7 +25,7 @@ export function bindings(body:string):Binding[]{
   return Array.from(body.matchAll(regex),m=>({expression:m[0],runId:m[1],metric:m[2],dp:Number(m[3]),start:m.index!,end:m.index!+m[0].length}));
 }
 export function resolve(binding:Binding,runs:Run[]){
-  const run=runs.find(r=>r.id===binding.runId);const value=run?.payload.metrics[binding.metric];
+  const run=runs.find(r=>r.id===binding.runId);const value=run&&Object.hasOwn(run.payload.metrics,binding.metric)?run.payload.metrics[binding.metric]:undefined;
   const latest=run?[...runs].filter(r=>r.payload.experiment===run.payload.experiment).sort((a,b)=>b.createdAt.localeCompare(a.createdAt)||b.id.localeCompare(a.id))[0]:undefined;
   return {run,value,latest,stale:!!run&&!!latest&&latest.id!==run.id,broken:value===undefined};
 }

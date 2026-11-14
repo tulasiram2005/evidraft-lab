@@ -1,0 +1,34 @@
+name: Prepare and verify Cyanotype release
+on:
+  push:
+    paths:
+      - '.github/workflows/prepare-v2.yml'
+      - 'scripts/self-host-fonts.mjs'
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Resolve patched dependencies and OFL fonts
+        run: |
+          npm uninstall lucide-react --ignore-scripts
+          npm install --save-exact zod@4.6.6 @fontsource/alegreya @fontsource/atkinson-hyperlegible-next @fontsource/courier-prime @fontsource/caveat --ignore-scripts
+          npm install --save-dev --save-exact vite@8.3.5 --ignore-scripts
+          node scripts/self-host-fonts.mjs
+      - run: npm test
+      - run: npm run build
+      - run: npm audit --audit-level=high
+      - name: Save verified release
+        run: |
+          cp -R dist/. docs/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add package.json package-lock.json public docs
+          git commit -m 'build: pin patched dependencies and bundle self-hosted OFL fonts'
+          git push
