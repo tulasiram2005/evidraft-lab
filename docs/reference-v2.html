@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Evidraft Lab | Design reference v2 (Cyanotype Herbarium)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,800;1,400;1,500&family=Atkinson+Hyperlegible+Next:wght@400;500;700&family=Courier+Prime:wght@400;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<!--
+HANDOFF FOR CODEX. This file REPLACES evidraft-design-reference.html and every palette, font and icon rule in the earlier redesign prompt.
+CONCEPT "Cyanotype Herbarium": the app is an accession catalogue for evidence. Runs are pressed specimens, claims get proofreader's marks,
+evidence cards are determination slips, a frozen edition is "accessioned". Cyanotype blue (Anna Atkins' botanical prints) + blue-black ink.
+RULES: (1) Fonts, all OFL, self-host with Fontsource: Alegreya (manuscript + headings), Atkinson Hyperlegible Next (UI), Courier Prime (accession ids, hashes, line numbers), Caveat (margin notes only, max 3 per screen).
+(2) Never grey, never black: ink is blue-black. One highlighter yellow (#F6D743), one proof-mark red. No orange, no gradients, no glow.
+(3) Misregistration motif: primary buttons and active states carry a flat 3px offset in highlighter yellow, like a misprinted second colour. Used nowhere else.
+(4) Run mark = generated leaf specimen (function leaf), unique per hash, shown on a cyanotype tile. Port as a pure tested function. Never an identicon, never a stock icon.
+(5) Icons are the custom set below (round caps, 1.5 stroke, yellow offset duplicate). Do not substitute Lucide/Heroicons.
+(6) Evidence thread = red string with knots, cubic curve, drawn in 320ms; reduced motion = instant.
+(7) Manuscript has real line numbers on a 34px baseline grid; evidence slips cite "line N" computed from layout.
+(8) Verified = dotted underline ("stet"). Mismatch = struck through. Unbound = caret. Margin notes in Caveat.
+(9) All free and open source. No external JS.
+-->
+<style>
+:root{--paper:#F7F9FB;--panel:#fff;--ink:#0B2545;--ink2:#23405F;--mute:#4E6A8C;--rule:#CBD8E6;--blue:#0A3358;--blue-t:#DCE8F3;--hl:#F6D743;--slip:#FFF2B0;--slip-line:#E2C94A;--slip-ink:#3A2F00;--red:#D8341F;--red-t:#FFE3DC;--ok:#14705F;--ok-t:#DDF2EC;--warn:#9A5B00;--warn-t:#FFEFD0;--leaf:#0A3358;--rail:#0A3358;--btn:#0A3358;--btn-ink:#fff;
+--serif:'Alegreya',Georgia,serif;--ui:'Atkinson Hyperlegible Next','Atkinson Hyperlegible',system-ui,sans-serif;--lab:'Courier Prime','Courier New',monospace;--hand:'Caveat',cursive}
+[data-theme=dark]{--paper:#082A4B;--panel:#0C3A66;--ink:#EAF2FA;--ink2:#C9DAEC;--mute:#9DB9D6;--rule:#265485;--blue-t:#124D82;--red:#FF7A66;--red-t:#4A1F1B;--ok:#6EE0C0;--ok-t:#0E4A47;--warn:#FFC266;--warn-t:#4B3410;--leaf:#EAF2FA;--rail:#051B31;--btn:#EAF2FA;--btn-ink:#082A4B}
+*{box-sizing:border-box;margin:0}
+body{font:15px/1.5 var(--ui);background:var(--paper);color:var(--ink);display:grid;grid-template-columns:236px 1fr;min-height:100vh;font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
+.lab{font-family:var(--lab)}
+.rail{background:var(--rail);color:#EAF2FA;padding:22px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:11px;padding:0 8px 22px;font:800 26px var(--serif);letter-spacing:-.01em}
+.brand small{font:400 11px var(--lab);letter-spacing:.14em;text-transform:uppercase;color:#9DB9D6;display:block;margin-top:-4px}
+.brand svg{width:34px;height:34px;flex:none}
+.nav{display:flex;align-items:center;gap:12px;padding:10px 10px;color:#C9DAEC;font-weight:500;text-align:left;width:100%;border-radius:2px}
+.nav:hover{color:#fff;background:rgba(255,255,255,.07)}
+.nav[aria-current=true]{color:#fff;background:rgba(255,255,255,.12);box-shadow:inset 3px 0 0 var(--hl)}
+.nav b{margin-left:auto;font:400 12px var(--lab);color:#9DB9D6}
+.ic{width:22px;height:22px;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none;overflow:visible}
+.rail .sp{flex:1}
+.stamp{font:400 11.5px/1.5 var(--lab);color:#9DB9D6;border-top:1px dashed #3F6A96;padding:12px 10px 0}
+main{min-width:0}
+.top{display:flex;align-items:center;gap:12px;padding:16px 36px;border-bottom:1px solid var(--rule)}
+.crumb{font:italic 500 17px var(--serif);color:var(--mute)}.crumb b{font-style:normal;font-weight:800;color:var(--ink)}
+.sp{flex:1}
+.btn{padding:8px 15px;border:1.5px solid var(--ink);font-weight:700;border-radius:2px}
+.btn:hover{background:var(--blue-t)}
+.btn.pri{background:var(--btn);color:var(--btn-ink);border-color:var(--btn);box-shadow:3px 3px 0 var(--hl);display:inline-flex;gap:8px;align-items:center}
+.btn.pri:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--hl)}
+.btn.pri:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--hl)}
+.ribbon{background:var(--slip);color:var(--slip-ink);padding:6px 36px;font:400 12.5px var(--lab);border-bottom:1px solid var(--slip-line)}
+.view{display:none;padding:30px 36px 72px}.view.on{display:block}
+h1{font:800 46px/1.04 var(--serif);letter-spacing:-.01em}
+h2{font:800 22px var(--serif)}
+.meta{color:var(--mute)}
+.ms{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:60px;max-width:1220px}
+.sheet{background:var(--panel);border:1px solid var(--rule);padding:44px 48px 40px 92px;position:relative}
+.sheet h1{margin-left:-44px;margin-bottom:10px;font-size:44px}
+.by{font:400 12.5px var(--lab);color:var(--mute);margin:0 0 30px -44px;padding-bottom:16px;border-bottom:3px double var(--ink)}
+.body{position:relative;font:400 20px/34px var(--serif);hyphens:auto}
+.body h3{font:500 21px/34px var(--serif);font-variant:all-small-caps;letter-spacing:.09em;margin-top:34px}
+.body p{text-indent:1.4em;margin:0}.body h3+p{text-indent:0}
+.gut{position:absolute;left:-60px;top:0;width:36px;text-align:right;font:400 11px/34px var(--lab);color:var(--mute);user-select:none;border-right:1px solid var(--rule);padding-right:8px}
+.chip{display:inline;padding:0 4px 0 2px;border-bottom:2px dotted var(--ok);cursor:pointer;font-variant-numeric:lining-nums tabular-nums}
+.chip svg{width:19px;height:19px;vertical-align:-4px;margin-right:4px;display:inline-block}
+.chip:hover,.chip.hot{background:color-mix(in srgb,var(--hl) 60%,transparent)}
+.cl{cursor:pointer;position:relative}
+.cl.bad{text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:2px}
+.cl.un{border-bottom:2px dashed var(--warn)}
+.cl.un::after{content:"^?";position:absolute;left:50%;bottom:-24px;transform:translateX(-50%);font:700 20px var(--hand);color:var(--warn)}
+.cl:hover,.cl.hot{background:color-mix(in srgb,var(--hl) 60%,transparent)}
+.margin{display:flex;flex-direction:column;gap:16px;padding-top:214px}
+.slip{position:relative;background:var(--slip);color:var(--slip-ink);border:1px solid var(--slip-line);padding:12px 14px 12px 40px;box-shadow:3px 3px 0 var(--blue-t);transition:transform .15s}
+.slip::before{content:"";position:absolute;left:13px;top:17px;width:11px;height:11px;border-radius:50%;background:var(--paper);border:1px solid var(--slip-line)}
+.slip.hot{transform:translate(-3px,-3px);box-shadow:6px 6px 0 var(--hl);border-color:var(--slip-ink)}
+.slip .r{display:flex;gap:11px;align-items:center}
+.slip .r svg{width:38px;height:38px;flex:none}
+.slip .v{margin-left:auto;font:800 24px var(--serif)}
+.slip .id{font:400 12px var(--lab)}
+.slip p{font-size:13px;margin-top:6px}
+.slip.bad{background:var(--red-t);border-color:var(--red);color:var(--ink)}.slip.bad::before{border-color:var(--red)}
+.slip .note{font:700 22px/1 var(--hand);color:var(--red);margin-top:6px}
+.slip.un{background:var(--warn-t);border-color:var(--warn)}.slip.un .note{color:var(--warn)}
+.tag{font:700 11px var(--lab);letter-spacing:.08em;padding:1px 6px;background:var(--red);color:#fff}.tag.u{background:var(--warn);color:#fff}
+#thread{position:absolute;inset:0;pointer-events:none;overflow:visible;z-index:4}
+#thread path{fill:none;stroke:var(--red);stroke-width:1.6}#thread circle{fill:var(--red)}
+.sm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin:24px 0 30px}
+.sm>div{background:var(--panel);border:1px solid var(--rule);padding:14px 16px}
+.sm .h{display:flex;align-items:center;gap:10px;font:italic 500 19px var(--serif)}.sm .h svg{width:28px;height:28px}
+.sm .h span{margin-left:auto;font:400 12px var(--lab);font-style:normal;color:var(--mute)}
+table{width:100%;border-collapse:collapse}
+th{font:700 11px var(--lab);letter-spacing:.1em;text-transform:uppercase;text-align:left;color:var(--mute);padding:8px 10px;border-bottom:3px double var(--ink)}
+td{padding:9px 10px;border-bottom:1px solid var(--rule)}
+td.n{font:700 17px var(--lab)}
+tr.r:hover td{background:color-mix(in srgb,var(--hl) 35%,transparent)}
+.rid{display:flex;align-items:center;gap:12px}.rid svg{width:32px;height:32px}
+.rid b{font:italic 500 18px var(--serif)}.rid small{display:block;font:400 12px var(--lab);color:var(--mute)}
+.band{display:flex;align-items:center;gap:16px;background:var(--slip);color:var(--slip-ink);border:1px solid var(--slip-line);padding:16px 22px;margin:20px 0 26px;max-width:880px;box-shadow:3px 3px 0 var(--blue-t)}
+.cc{background:var(--panel);border:1px solid var(--rule);padding:20px 24px;margin-bottom:18px;max-width:880px}
+.cc q{font:italic 500 24px var(--serif);quotes:"“" "”"}
+.cc .row{display:flex;gap:12px;align-items:center;margin-bottom:8px}
+.ruler text{font:400 12px var(--lab);fill:var(--mute)}
+.ed{background:var(--panel);border:1.5px solid var(--ink);padding:20px 24px;margin-bottom:14px;max-width:780px;display:flex;gap:22px;align-items:center}
+.ed svg.seal{width:110px;height:110px;flex:none;color:var(--ink)}
+.tl{position:relative;margin:24px 0 0 16px;padding-left:36px;border-left:2px solid var(--ink);max-width:780px}
+.ev{position:relative;padding-bottom:24px}.ev>svg{position:absolute;left:-55px;top:0;width:34px;height:34px}
+.ev .k{font:700 12px var(--lab);letter-spacing:.1em}.ev code{display:block;font:12px/1.4 var(--lab);color:var(--mute);word-break:break-all}
+.ov{position:fixed;inset:0;background:rgba(5,27,49,.7);display:none;place-items:center;z-index:20}.ov.on{display:grid}
+.ov>div{background:var(--panel);width:min(540px,92vw);padding:30px 34px;text-align:center;border:2px solid var(--ink);box-shadow:8px 8px 0 var(--hl)}
+.ov .st{display:inline-block;font:800 34px var(--serif);letter-spacing:.14em;border:4px double var(--red);color:var(--red);padding:0 16px;transform:rotate(-5deg) scale(1.7);opacity:0;margin:10px 0 16px}
+.ov.go .st{animation:press .34s .1s forwards cubic-bezier(.2,.9,.3,1)}
+@keyframes press{to{transform:rotate(-5deg) scale(1);opacity:1}}
+.ov code{display:block;font:13px/1.5 var(--lab);word-break:break-all;min-height:40px;color:var(--ink2)}
+.ov svg{width:110px;height:110px;margin-top:8px;color:var(--ink)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:1000px){body{grid-template-columns:1fr}.rail{display:none}.ms{grid-template-columns:1fr}.sheet{padding:28px 24px 28px 64px}.margin{padding-top:0}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<g id="p-ms"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h7M9 16h5"/></g>
+<g id="p-lg"><path d="M4 11.5V4h7.5L20 12.5 12.5 20z"/><circle cx="8" cy="8" r="1.3"/></g>
+<g id="p-ck"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21M7.8 10.7l2 2 3.6-4"/></g>
+<g id="p-fz"><circle cx="12" cy="9.5" r="6"/><circle cx="12" cy="9.5" r="3" stroke-dasharray="1 2"/><path d="M8.5 14.5L7 21l5-2.5 5 2.5-1.5-6.5"/></g>
+<g id="p-mo"><circle cx="12" cy="12" r="7.5"/><path d="M12 4.5v15" /><path d="M12 4.5a7.5 7.5 0 010 15z" fill="currentColor"/></g>
+</defs></svg>
+
+<aside class="rail">
+  <div class="brand" id="brand"></div>
+  <button class="nav" data-v="ms" aria-current="true"><svg class="ic" data-i="ms"></svg>Manuscript</button>
+  <button class="nav" data-v="lg"><svg class="ic" data-i="lg"></svg>Specimens<b>20</b></button>
+  <button class="nav" data-v="ck"><svg class="ic" data-i="ck"></svg>Proofing<b>2</b></button>
+  <button class="nav" data-v="fz"><svg class="ic" data-i="fz"></svg>Accessions<b id="nEd">1</b></button>
+  <div class="sp"></div>
+  <button class="nav" id="theme"><svg class="ic" data-i="mo"></svg>Cyanotype / paper</button>
+  <div class="stamp">Kept on this device.<br>No cloud. No tracking.</div>
+</aside>
+
+<main>
+  <header class="top"><span class="crumb">Leaf systems lab / <b id="crumb">Manuscript</b></span><span class="sp"></span><button class="btn">Export</button><button class="btn pri" id="freeze">Accession edition</button></header>
+  <div class="ribbon">DEMO SPECIMENS: every figure in this workspace is synthetic.</div>
+
+  <section class="view on" id="v-ms">
+    <div class="ms" id="msg"><svg id="thread"></svg>
+      <article class="sheet">
+        <h1>Lightweight transfer learning for leaf disease classification</h1>
+        <div class="by">LEAF SYSTEMS LABORATORY · WORKING DRAFT 01 · SYNTHETIC DEMONSTRATION</div>
+        <div class="body" id="body"><div class="gut" id="gut"></div>
+          <h3>Results</h3>
+          <p>The baseline achieves a macro F1 of <span class="chip" data-e="0" data-card="c0"></span>, compared with <span class="chip" data-e="1" data-card="c1"></span> for the leaf adapter. This <span class="cl bad" data-card="f1">improves F1 by 12%</span>, a gain we consider substantial.</p>
+          <p>The quantized adapter reaches <span class="chip" data-e="2" data-card="c2"></span> at an inference latency of <span class="chip" data-e="2" data-card="c2" data-plain="30.000 ms"></span> on the reference device.</p>
+          <p>Overall, the model attains <span class="cl un" data-card="f2">97% accuracy</span> on field images.</p>
+          <h3>Limitations</h3>
+          <p>These experiments are synthetic and establish no real-world performance.</p>
+        </div>
+      </article>
+      <aside class="margin" id="margin"></aside>
+    </div>
+  </section>
+
+  <section class="view" id="v-lg">
+    <h1>Specimens</h1>
+    <p class="meta">Catalogue of 20 runs in 4 experiments. Append only. Each leaf is one seed, the pin marks the mean.</p>
+    <div class="sm" id="sm"></div>
+    <table><thead><tr><th>Specimen</th><th>Seed</th><th>Macro F1</th><th>Trend</th><th>Collected</th></tr></thead><tbody id="rows"></tbody></table>
+  </section>
+
+  <section class="view" id="v-ck">
+    <h1>Proofing</h1>
+    <div class="band"><h2>Two marks need your judgment</h2><span class="sp"></span><span style="font-size:13px">Checks cannot certify method or significance.</span></div>
+    <div class="cc">
+      <div class="row"><span class="tag">STRUCK</span><span class="sp"></span><button class="btn">Edit prose</button></div>
+      <q>improves F1 by 12%</q>
+      <svg class="ruler" viewBox="0 0 700 122" width="100%" role="img" aria-label="Claimed 12 percent versus computed 9.834 percent">
+        <line x1="40" y1="60" x2="660" y2="60" stroke="var(--ink)" stroke-width="2"/>
+        <path stroke="var(--ink)" d="M40 52v16M128.6 55v10M217.1 52v16M305.7 55v10M394.3 52v16M482.9 55v10M571.4 52v16M660 55v10"/>
+        <text x="40" y="88" text-anchor="middle">0%</text><text x="217" y="88" text-anchor="middle">4%</text><text x="394" y="88" text-anchor="middle">8%</text><text x="571" y="88" text-anchor="middle">12%</text>
+        <rect x="475.5" y="48" width="95.9" height="24" fill="var(--red)" opacity=".18"/>
+        <path d="M475.5 44v32" stroke="var(--red)" stroke-width="4"/>
+        <path d="M571.4 40v40" stroke="var(--ink)" stroke-width="2" stroke-dasharray="4 3"/>
+        <text x="475" y="34" text-anchor="middle" style="fill:var(--red);font-weight:700">computed 9.834%</text>
+        <text x="571" y="22" text-anchor="middle" style="fill:var(--ink);font-weight:700">claimed 12%</text>
+        <text x="523" y="116" text-anchor="middle" style="font-family:var(--hand);font-size:22px;fill:var(--red)">gap 2.17 pts</text>
+      </svg>
+      <p class="meta">(0.927 − 0.844) / 0.844, computed by code from the bound specimens. No model does arithmetic.</p>
+    </div>
+    <div class="cc"><div class="row"><span class="tag u">CARET</span><span class="sp"></span><button class="btn pri">Bind to a specimen</button></div><q>97% accuracy</q><p class="meta" style="margin-top:8px">No specimen in the catalogue records an accuracy of 0.97.</p></div>
+  </section>
+
+  <section class="view" id="v-fz">
+    <h1>Accessions</h1>
+    <p class="meta">An accessioned edition is sealed. Later experiments cannot rewrite it.</p>
+    <div style="height:20px"></div><div id="eds"></div>
+    <h2 style="margin-top:30px">Chain of custody</h2><div class="tl" id="tl"></div>
+  </section>
+</main>
+
+<div class="ov" id="ov"><div><span class="meta">Hashing manuscript and 3 bound specimens</span><br><span class="st">ACCESSIONED</span><code id="hx"></code><span id="sg"></span></div></div>
+
+<script>
+const $=(s,e=document)=>e.querySelector(s),$$=(s,e=document)=>[...e.querySelectorAll(s)];
+function hash(s){let a=2166136261;for(const c of s){a^=c.charCodeAt(0);a=Math.imul(a,16777619)}let o='';for(let i=0;i<4;i++){a=Math.imul(a^(a>>>15),2246822507);a^=a>>>13;o+=(a>>>0).toString(16).padStart(8,'0')}return o}
+/* leaf specimen: deterministic from hash, cyanotype tile */
+function leafInner(h,bg){const n=i=>parseInt(h[i],16)/15,W=7+n(0)*7,sk=.3+n(2)*.35,e=Math.log(.5)/Math.log(sk),p=.55+n(1)*.7,rot=(n(3)-.5)*26;
+const w=t=>W*Math.pow(Math.sin(Math.PI*Math.pow(t,e)),p),Y=t=>36-t*32;let L='',R='';
+for(let i=0;i<=24;i++){const t=i/24;L+=`${i?'L':'M'}${(20-w(t)).toFixed(1)} ${Y(t).toFixed(1)}`;R=`L${(20+w(t)).toFixed(1)} ${Y(t).toFixed(1)}`+R}
+const k=3+Math.floor(n(4)*3);let v='';for(let i=1;i<=k;i++){const t=.1+i/(k+1)*.78,y=Y(t),x=w(t)*.92;v+=`M20 ${y}L${20-x} ${y-x*.7}M20 ${y}L${20+x} ${y-x*.7}`}
+return `<rect width="40" height="40" fill="${bg}"/><g transform="rotate(${rot.toFixed(1)} 20 20)"><path d="${L}${R}Z" fill="#F7F9FB"/><path d="M20 38V5${v}" stroke="${bg}" stroke-width="1" fill="none"/></g>`}
+const leaf=(h,bg)=>`<svg viewBox="0 0 40 40">${leafInner(h,bg)}</svg>`;
+function seal(h){return `<svg class="seal" viewBox="0 0 120 120"><defs><path id="cp" d="M60 60m-45 0a45 45 0 1 1 90 0a45 45 0 1 1-90 0"/></defs><circle cx="60" cy="60" r="57" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="60" cy="60" r="30" fill="none" stroke="currentColor" stroke-width="1"/><text font-family="Courier Prime,monospace" font-size="9.5" letter-spacing="2" fill="currentColor"><textPath href="#cp">ACCESSIONED · EVIDRAFT LAB · ACCESSIONED · EVIDRAFT LAB · </textPath></text><svg x="34" y="34" width="52" height="52" viewBox="0 0 40 40">${leafInner(h,'#0A3358')}</svg></svg>`}
+/* icons: custom set with yellow misregistered duplicate */
+$$('.ic').forEach(s=>{const i=s.dataset.i;s.setAttribute('viewBox','0 0 24 24');s.innerHTML=`<use href="#p-${i}" stroke="#F6D743" transform="translate(1.6 1.6)"/><use href="#p-${i}" stroke="currentColor"/>`});
+$('#brand').innerHTML=`<svg viewBox="0 0 40 40">${leafInner(hash('evidraft'),'#14607A')}</svg><div>Evidraft<small>Lab</small></div>`;
+const E=[{n:'Baseline',c:'#4A5D73',v:[.844,.841,.839,.836,.833]},{n:'Leaf adapter',c:'#0A3358',v:[.927,.924,.921,.918,.915]},{n:'Quantized adapter',c:'#14607A',v:[.919,.916,.913,.910,.907]},{n:'Tiny ViT',c:'#2E4C9E',v:[.894,.891,.889,.885,.884]}];
+E.forEach(e=>e.runs=e.v.map((f,j)=>({f,seed:46-j,id:hash(e.n+(46-j)),day:13-j})));
+const lead=e=>e.runs[0],acc=r=>'EV-26-'+r.id.slice(0,8).toUpperCase();
+$$('.chip').forEach(c=>{const e=E[+c.dataset.e],r=lead(e);c.innerHTML=leaf(r.id,e.c)+(c.dataset.plain||r.f.toFixed(3))});
+const M=$('#margin');
+E.slice(0,3).forEach((e,i)=>{const r=lead(e);M.insertAdjacentHTML('beforeend',`<div class="slip" id="c${i}"><div class="r">${leaf(r.id,e.c)}<div><b>${e.n}</b><div class="id">${acc(r)} · seed ${r.seed}</div></div><span class="v">${r.f.toFixed(3)}</span></div><p>Latest specimen of this experiment. Immutable, SHA-256. <span class="ln"></span></p></div>`)});
+M.insertAdjacentHTML('beforeend',`<div class="slip bad" id="f1"><span class="tag">STRUCK</span><p>Computed from the bound specimens: 9.834%, not 12%. <span class="ln"></span></p><div class="note">9.83, not 12!</div></div><div class="slip un" id="f2"><span class="tag u">CARET</span><p>No specimen backs this number. <span class="ln"></span></p><div class="note">which run?</div></div>`);
+/* baseline grid line numbers + line refs */
+function lines(){const b=$('#body'),n=Math.round(b.offsetHeight/34);$('#gut').innerHTML=Array.from({length:n},(_,i)=>i+1).join('<br>');const bt=b.getBoundingClientRect().top;
+$$('[data-card]').forEach(el=>{const ln=Math.floor((el.getBoundingClientRect().top-bt+4)/34)+1,s=$('#'+el.dataset.card+' .ln');if(s)s.textContent='Line '+ln+'.'})}
+(document.fonts?document.fonts.ready:Promise.resolve()).then(lines);addEventListener('resize',lines);lines();
+/* evidence thread: red string with knots */
+const svg=$('#thread'),grid=$('#msg');let cur=null;
+function thread(el){clear();const g=grid.getBoundingClientRect(),a=el.getBoundingClientRect(),card=$('#'+el.dataset.card),b=card.getBoundingClientRect();
+const x1=a.left+a.width/2-g.left,y1=a.bottom-g.top-2,x2=b.left-g.left+18,y2=b.top-g.top+22,N='http://www.w3.org/2000/svg';
+const p=document.createElementNS(N,'path');p.setAttribute('d',`M${x1} ${y1}C${x1} ${y1+70} ${x2-110} ${y2+40} ${x2} ${y2}`);
+svg.append(p);[[x1,y1],[x2,y2]].forEach(([x,y])=>{const c=document.createElementNS(N,'circle');c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',3.5);svg.append(c)});
+if(!matchMedia('(prefers-reduced-motion:reduce)').matches){const L=p.getTotalLength();p.style.strokeDasharray=L;p.style.strokeDashoffset=L;p.getBoundingClientRect();p.style.transition='stroke-dashoffset .32s ease-out';p.style.strokeDashoffset=0}
+el.classList.add('hot');card.classList.add('hot');cur=[el,card]}
+function clear(){svg.innerHTML='';if(cur)cur.forEach(x=>x.classList.remove('hot'));cur=null}
+$$('.chip,.cl').forEach(el=>{el.tabIndex=0;el.onmouseenter=el.onfocus=()=>thread(el);el.onmouseleave=el.onblur=clear});
+/* catalogue */
+const sm=$('#sm');E.forEach(e=>{const lo=.82,hi=.94,X=v=>24+(v-lo)/(hi-lo)*552,vs=e.v,m=vs.reduce((a,b)=>a+b)/vs.length;
+let ticks='';for(let i=0;i<=12;i++){const x=24+i*46;ticks+=`<path d="M${x} 30v${i%2?4:8}" stroke="var(--mute)"/>`}
+sm.insertAdjacentHTML('beforeend',`<div><div class="h">${leaf(lead(e).id,e.c)}${e.n}<span>mean ${m.toFixed(3)}</span></div><svg viewBox="0 0 600 62" width="100%"><path d="M24 30H576" stroke="var(--ink)" stroke-width="1.5"/>${ticks}${vs.map((v,i)=>`<ellipse cx="${X(v)}" cy="${22-(i%3)*5}" rx="6" ry="3" transform="rotate(-38 ${X(v)} ${22-(i%3)*5})" fill="var(--leaf)"/>`).join('')}<path d="M${X(m)} 8V52" stroke="var(--red)" stroke-width="1.5"/><circle cx="${X(m)}" cy="8" r="3.5" fill="var(--red)"/><text x="24" y="58" font-family="Courier Prime" font-size="10" fill="var(--mute)">.82</text><text x="560" y="58" font-family="Courier Prime" font-size="10" fill="var(--mute)">.94</text></svg></div>`)});
+const rows=$('#rows');E.forEach(e=>e.runs.forEach(r=>{const mn=Math.min(...e.v),mx=Math.max(...e.v),pts=e.runs.slice().reverse().map((q,i)=>`${i*20},${27-(q.f-mn)/(mx-mn)*24}`).join(' ');
+rows.insertAdjacentHTML('beforeend',`<tr class="r"><td><div class="rid">${leaf(r.id,e.c)}<div><b>${e.n}</b><small>${acc(r)}</small></div></div></td><td class="n">${r.seed}</td><td class="n">${r.f.toFixed(3)}</td><td><svg width="84" height="30"><polyline points="${pts}" fill="none" stroke="var(--ink)" stroke-width="1.8" stroke-linejoin="round"/></svg></td><td class="meta">${r.day} Nov</td></tr>`)}));
+/* views and theme */
+const names={ms:'Manuscript',lg:'Specimens',ck:'Proofing',fz:'Accessions'};
+function go(v){$$('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));$$('.nav[data-v]').forEach(n=>n.setAttribute('aria-current',n.dataset.v===v));$('#crumb').textContent=names[v];clear();if(v==='ms')lines()}
+$$('.nav[data-v]').forEach(n=>n.onclick=()=>go(n.dataset.v));
+$('#theme').onclick=()=>{const r=document.documentElement;r.dataset.theme=r.dataset.theme==='dark'?'light':'dark'};
+/* accessions */
+const EDS=[{n:1,h:hash('edition1'),t:'13/11/2026 23:00'}],EV=[{k:'REBIND',t:'22:58',h:hash('rb2')},{k:'REBIND',t:'20:57',h:hash('rb1')}];
+function drawEd(){$('#nEd').textContent=EDS.length;$('#eds').innerHTML=EDS.slice().reverse().map(e=>`<div class="ed">${seal(e.h)}<div><h2>Accession ${String(e.n).padStart(3,'0')}</h2><div class="meta">${e.t} · 3 bound specimens · unsigned browser seal</div><code class="lab meta" style="font-size:12px;word-break:break-all;display:block;margin:6px 0 12px">${e.h}</code><button class="btn">Bundle</button> <button class="btn">Verify</button></div></div>`).join('');
+$('#tl').innerHTML=[...EDS.slice().reverse().map(e=>({k:'ACCESSIONED',t:e.t.slice(-5),h:e.h})),...EV].map(x=>`<div class="ev">${leaf(x.h,x.k==='REBIND'?'#4A5D73':'#0A3358')}<div class="k">${x.k} <span class="meta">${x.t}</span></div><code>${x.h}</code></div>`).join('')}
+drawEd();
+$('#freeze').onclick=()=>{const o=$('#ov'),hx=$('#hx'),sg=$('#sg'),n=EDS.length+1,fin=hash('edition'+n+Date.now())+hash('x'+Date.now());o.classList.add('on');sg.innerHTML='';hx.textContent='';o.classList.remove('go');void o.offsetWidth;o.classList.add('go');
+const done=()=>{hx.textContent=fin;sg.innerHTML=seal(fin);setTimeout(()=>{o.classList.remove('on');EDS.push({n,h:fin,t:new Date().toLocaleString('en-GB').slice(0,16).replace(',','')});drawEd();go('fz')},1000)};
+if(matchMedia('(prefers-reduced-motion:reduce)').matches)return done();let k=0;const t=setInterval(()=>{hx.textContent=fin.slice(0,++k);if(k>=fin.length){clearInterval(t);done()}},16)};
+</script>
+</body>
+</html>
