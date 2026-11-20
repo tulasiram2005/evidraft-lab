@@ -28,7 +28,7 @@
     "@types/react-dom": "https://registry.npmjs.org/@types/react-dom/-/react-dom-19.1.9.tgz",
     "tsx": "https://registry.npmjs.org/tsx/-/tsx-4.21.0.tgz",
     "typescript": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
-    "vite": "8.3.5"
+    "vite": "8.3.8"
   },
   "overrides": {
     "rollup": "4.62.2",
