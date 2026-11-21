@@ -1,5 +1,5 @@
 import { chromium } from 'playwright';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readdir, writeFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
 const base = process.env.APP_URL || 'http://localhost:4173';
@@ -55,6 +55,8 @@ try {
       await nav(/^Accessions/);
       await shot('accessions');
       await modal('Verify a bundle','verify');
+      const images=(await readdir(dir)).filter(file=>file.endsWith('.png')&&file!=='reference.png');
+      await writeFile(dir+'/review.html', '<!doctype html><meta charset="utf-8"><title>Evidraft visual review</title><style>body{font:16px system-ui;margin:2rem}section{display:grid;grid-template-columns:1fr 1fr;gap:1rem}img{width:100%;border:1px solid #bbb}</style><h1>'+width+'px · '+theme+'</h1>'+images.map(file=>'<h2>'+file+'</h2><section><div>Design reference<img src="reference.png"></div><div>Application<img src="'+file+'"></div></section>').join(''));
       assert.deepEqual(errors,[]);
       await page.close();
     }
