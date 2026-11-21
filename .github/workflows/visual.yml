@@ -1,5 +1,5 @@
 name: Manuscript visual acceptance
-on: [push, pull_request]
+on: [pull_request, workflow_dispatch]
 permissions:
   contents: read
 jobs:
@@ -10,6 +10,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Verify database roles and revision conflicts
+        run: |
+          sudo systemctl start postgresql
+          sudo -u postgres psql -v ON_ERROR_STOP=1 < tests/cloud-roles.sql
       - run: npm ci --ignore-scripts
       - run: node scripts/self-host-fonts.mjs
       - run: npm test && npm run build
