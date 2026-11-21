@@ -3,7 +3,7 @@ import { mkdir } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
 const base = process.env.APP_URL || 'http://localhost:4173';
-const browser = await chromium.launch();
+const browser = await chromium.launch({channel:'chrome'});
 try {
   for (const width of [375, 768, 1024, 1440]) {
     for (const theme of ['light', 'dark']) {

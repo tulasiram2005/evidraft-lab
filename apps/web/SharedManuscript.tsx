@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 type Manuscript = {id:string; owner_id:string; body:string; revision:number};
 type Session = {access_token:string; user:{id:string}};
@@ -24,6 +24,8 @@ export function SharedManuscript({source,close}:Props) {
     try{await action();}catch(e){notify(e instanceof Error?e.message:'Request failed');}finally{setBusy(false);}
   };
   const open=(d:Manuscript)=>{setDoc(d);setBody(d.body);};
+  const currentDraft=useRef({doc,body});
+  currentDraft.current={doc,body};
   useEffect(()=>{
     if(!session)return;
     let active=true;
@@ -32,6 +34,7 @@ export function SharedManuscript({source,close}:Props) {
         const rows:Manuscript[]=await request('/rest/v1/shared_manuscripts?select=*&order=id');
         if(!active)return;
         setItems(rows);
+        const {doc,body}=currentDraft.current;
         const current=rows.find(row=>row.id===doc?.id);
         if(doc&&!current){setDoc(null);notify('Access removed.');}
         if(current&&doc&&current.revision>doc.revision){
@@ -42,7 +45,7 @@ export function SharedManuscript({source,close}:Props) {
     };
     void refresh();const timer=setInterval(refresh,3000);
     return ()=>{active=false;clearInterval(timer);};
-  },[session,doc,body]);
+  },[session]);
   const dirty=!!doc&&body!==doc.body;
   const leave=()=>!dirty||window.confirm('Discard unsaved shared edits?');
   return <section className="paper" aria-label="Shared manuscripts"><button onClick={()=>{if(leave())close();}}>Back to research desk</button><h1>Shared manuscripts</h1>
